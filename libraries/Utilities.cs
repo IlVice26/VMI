@@ -16,12 +16,11 @@ namespace ViceserverModpackInstaller
             "  \\    /|  |\\/|  |  | Installer v1.6\n" +
             "   \\__/	|__|  |__|__| Copyright 2021 - Elia Vicentini";
 
+        public static string username = Environment.UserName;
+        public static string installer_dir = "C:\\Users\\" + username + "\\Appdata\\Roaming\\vmi";
         public static void CheckInstallerVersion()
         {
             ShowWaitingTask.StartTask("chk-i");
-
-            string username = Environment.UserName;
-            string installer_dir = "C:\\Users\\" + username + "\\Appdata\\Roaming\\vmi";
 
             if (!Directory.Exists(installer_dir))
             {
@@ -31,12 +30,16 @@ namespace ViceserverModpackInstaller
 
                 Console.Write("\n· Creating a new environment for the installer ");
                 ShowWaitingTask.StartTask("crt-i");
-                
+
                 // Creation of the new environment for the installer
                 Directory.CreateDirectory(installer_dir);
-                
+
+
+
                 ShowWaitingTask.FinishTask("crt-i");
-            } else {
+            }
+            else
+            {
                 ShowWaitingTask.FinishTask("chk-i");
             }
         }
@@ -135,7 +138,9 @@ namespace ViceserverModpackInstaller
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Write("✓");
                 Console.ResetColor();
-            } else {
+            }
+            else
+            {
                 Console.SetCursorPosition(sx, Console.CursorTop);
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.Write("X");

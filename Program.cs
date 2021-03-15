@@ -17,7 +17,8 @@ namespace ViceserverModpackInstaller
             - 3) If an official modpack is not installed, it gives the possibility to the user to install it
             */
             Utilities.RedrawCmd("initial-setup");
-            
+
+            DataManager.PathResolver();
             // Utilities.RedrawCmd("test");
             Console.ReadLine();
         }
