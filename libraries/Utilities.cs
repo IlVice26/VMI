@@ -34,14 +34,14 @@ namespace ViceserverModpackInstaller
                 // Creation of the new environment for the installer
                 Directory.CreateDirectory(installer_dir);
 
-
-
                 ShowWaitingTask.FinishTask("crt-i");
             }
             else
             {
-                ShowWaitingTask.FinishTask("chk-i");
+                Console.Write("\n· Resolving paths in settings.json ");
+                DataManager.PathResolver();
             }
+            ShowWaitingTask.FinishTask("chk-i");
         }
 
         public static void RedrawCmd(string stage)
@@ -56,7 +56,7 @@ namespace ViceserverModpackInstaller
 
                 Console.Write("\n· Checking the modpack settings ");
                 CheckInstallerVersion();
-
+                
                 Console.WriteLine("\n\nTask Finished");
 
             }
@@ -134,14 +134,14 @@ namespace ViceserverModpackInstaller
 
             if (result)
             {
-                Console.SetCursorPosition(sx, Console.CursorTop);
+                Console.SetCursorPosition(sx, col);
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Write("✓");
                 Console.ResetColor();
             }
             else
             {
-                Console.SetCursorPosition(sx, Console.CursorTop);
+                Console.SetCursorPosition(sx, col);
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.Write("X");
                 Console.ResetColor();

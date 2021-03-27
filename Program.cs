@@ -18,7 +18,6 @@ namespace ViceserverModpackInstaller
             */
             Utilities.RedrawCmd("initial-setup");
 
-            DataManager.PathResolver();
             // Utilities.RedrawCmd("test");
             Console.ReadLine();
         }
