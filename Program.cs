@@ -1,15 +1,18 @@
 using System;
-using Terminal.Gui;
+
 
 namespace ViceserverModpackInstaller
 {
     class Program
     {
+
+        public static readonly string VERSION = "v1.6";
+
         public static void Main()
         {
             // Clear the console
             Console.Clear();
- 
+
             /**
             Tasks of Viceserver Modpack Installer
             - 1) It checks the version of the installer, if it's outdated, it runs the updater
@@ -18,7 +21,6 @@ namespace ViceserverModpackInstaller
             */
             Utilities.RedrawCmd("initial-setup");
             Console.SetCursorPosition(0, Console.CursorTop + 2);
-            // Utilities.RedrawCmd("test");
             Console.ReadLine();
         }
     }

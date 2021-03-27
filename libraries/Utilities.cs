@@ -10,19 +10,17 @@ namespace ViceserverModpackInstaller
     {
         private static readonly string update_link = "https://api.github.com/repos/IlVice26/vicepack-installer/releases/latest";
         private static string title =
-            " _     _ __    __ __\n" +
+            "___    ____    ______\n" +
             "\\  \\  / |  \\  /  |  | Viceserver\n" +
             " \\  \\/  |   \\/   |  | Modpack\n" +
-            "  \\    /|  |\\/|  |  | Installer v1.6\n" +
+            "  \\    /|  |\\/|  |  | Installer " + Program.VERSION + "\n" +
             "   \\__/	|__|  |__|__| Copyright 2021 - Elia Vicentini";
 
-        public static string username = Environment.UserName;
-        public static string installer_dir = "C:\\Users\\" + username + "\\Appdata\\Roaming\\vmi";
         public static void CheckInstallerVersion()
         {
             ShowWaitingTask.StartTask("chk-i");
 
-            if (!Directory.Exists(installer_dir))
+            if (!File.Exists(DataManager.settings_info["general"]["installer_config"].ToString()))
             {
                 // "Cartella 'temp' non trovata. Creazione in corso"
                 ShowWaitingTask.UserTasks["chk-i"]["result"] = false;
@@ -32,16 +30,14 @@ namespace ViceserverModpackInstaller
                 ShowWaitingTask.StartTask("crt-i");
 
                 // Creation of the new environment for the installer
-                Directory.CreateDirectory(installer_dir);
+                DataManager.CreateInstallerConfig();
 
                 ShowWaitingTask.FinishTask("crt-i");
             }
             else
             {
-                Console.Write("\n·    Resolving paths in settings.json ");
-                DataManager.PathResolver();
+                ShowWaitingTask.FinishTask("chk-i");
             }
-            ShowWaitingTask.FinishTask("chk-i");
         }
 
         public static void RedrawCmd(string stage)

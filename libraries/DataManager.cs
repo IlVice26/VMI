@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Threading;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -14,33 +13,72 @@ namespace ViceserverModpackInstaller
 
         private static string settings_link = "http://viceserver.vpsgh.it/files/json/settings.json";
         public static string username = Environment.UserName;
+        public static string installer_dir = "C:\\Users\\" + username + "\\AppData\\Roaming\\vmi";
+        public static dynamic settings = PathResolver();
+        public static dynamic settings_info = JsonConvert.DeserializeObject<Dictionary<string, object>>(GetSettingsInfo());
+        public static dynamic modpacks_info = JsonConvert.DeserializeObject<Dictionary<string, object>>(GetModpacksInfo());
+        public static List<string> modpacks_names = GetModpacksNames();
 
-        public static void CreateConfig()
+        public static void CreateInstallerConfig()
         {
-            if (!File.Exists(Utilities.installer_dir + "\\config.json"))
+            if (!File.Exists(settings_info["general"]["installer_config"].ToString()))
             {
-
+                File.WriteAllText(
+                    settings_info["general"]["installer_config"].ToString(),
+                    settings_info["general"]["installer_config_template"].ToString()
+                );
             }
         }
 
-        public static dynamic PathResolver()
+        public static void CreateModpackConfig(string modpack)
         {
-            ShowWaitingTask.StartTask("rsv-s");
-
-            if (!File.Exists(Utilities.installer_dir + "\\settings.json"))
+            if (modpacks_names.Contains(modpack))
             {
-                Console.WriteLine("Test settings.json not founded");
+                if (!File.Exists(modpacks_info[modpack]["profile"]["gameDir"].ToString() + "\\config.json"))
+                {
+                    File.WriteAllText(
+                        modpacks_info[modpack]["profile"]["gameDir"].ToString() + "\\config.json",
+                        settings_info["general"]["first_install_config_template"].ToString()
+                    );
+                }
+            }
+        }
+
+        public static void CreateGameDirectory(string modpack)
+        {
+            if (modpacks_names.Contains(modpack))
+            {
+                if (!Directory.Exists(modpacks_info[modpack]["profile"]["gameDir"].ToString()))
+                {
+                    Directory.CreateDirectory(
+                        modpacks_info[modpack]["profile"]["gameDir"].ToString()
+                    );
+                }
+            }
+        }
+
+        private static dynamic PathResolver()
+        {
+            if (!Directory.Exists(installer_dir))
+            {
+                Directory.CreateDirectory(
+                   installer_dir
+                );
+            }
+
+            if (!File.Exists(installer_dir + "\\settings.json"))
+            {
                 using (var client = new WebClient())
                 {
                     client.DownloadFile(
                         new System.Uri(settings_link),
-                        Utilities.installer_dir + "\\settings.json"
+                        installer_dir + "\\settings.json"
                     );
                 };
 
             }
 
-            dynamic settingsJson = LoadJson(Utilities.installer_dir + "\\settings.json");
+            dynamic settingsJson = LoadJson(installer_dir + "\\settings.json");
 
             // Fix dir_instances
             string dir_instances = settingsJson["settings"]["instances_folder"]["dir_instances"];
@@ -114,18 +152,41 @@ namespace ViceserverModpackInstaller
                 }
             }
 
-            ShowWaitingTask.FinishTask("rsv-s");
-            return settingsJson;
+            Dictionary<string, object> settingsJ = settingsJson;
+            return settingsJ;
         }
 
-        public static dynamic LoadJson(string file)
+        private static dynamic GetSettingsInfo()
+        {
+            return settings["settings"].ToString();
+        }
+
+        private static dynamic GetModpacksInfo()
+        {
+            return settings["modpacks"].ToString();
+        }
+
+        public static List<string> GetModpacksNames()
+        {
+            Dictionary<string, object>.KeyCollection mp_kc = modpacks_info.Keys;
+            List<string> names = new List<string>();
+
+            foreach (string item in mp_kc)
+            {
+                names.Add(item);
+            }
+
+            return names;
+        }
+
+        public static Dictionary<string, object> LoadJson(string file)
         {
             try
             {
                 using (StreamReader filereader = new StreamReader(file))
                 {
                     string json = filereader.ReadToEnd();
-                    dynamic jsonFile = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    Dictionary<string, object> jsonFile = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
                     return jsonFile;
                 }
             }
