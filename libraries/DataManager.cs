@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -22,10 +23,10 @@ namespace ViceserverModpackInstaller
             }
         }
 
-        public static void PathResolver()
+        public static dynamic PathResolver()
         {
             ShowWaitingTask.StartTask("rsv-s");
-                
+
             if (!File.Exists(Utilities.installer_dir + "\\settings.json"))
             {
                 Console.WriteLine("Test settings.json not founded");
@@ -50,7 +51,7 @@ namespace ViceserverModpackInstaller
                 if (temp_var_dir[1].Equals("home"))
                 {
                     dir_instances = "C:\\Users\\" + username + temp_var_dir[2];
-                    settingsJson["settings"]["instances_folder"]["dir_instances"] = dir_instances; 
+                    settingsJson["settings"]["instances_folder"]["dir_instances"] = dir_instances;
                 }
             }
 
@@ -65,7 +66,7 @@ namespace ViceserverModpackInstaller
                 if (temp_var_dir[1].Equals("dir_instances"))
                 {
                     mc_folder = dir_instances + temp_var_dir[2];
-                    settingsJson["settings"]["minecraft"]["mc_folder"] = mc_folder; 
+                    settingsJson["settings"]["minecraft"]["mc_folder"] = mc_folder;
                 }
             }
 
@@ -75,7 +76,7 @@ namespace ViceserverModpackInstaller
                 if (temp_var_dir[1].Equals("mc_folder"))
                 {
                     mc_versions = mc_folder + temp_var_dir[2];
-                    settingsJson["settings"]["minecraft"]["mc_versions"] = mc_versions; 
+                    settingsJson["settings"]["minecraft"]["mc_versions"] = mc_versions;
                 }
             }
 
@@ -85,7 +86,7 @@ namespace ViceserverModpackInstaller
                 if (temp_var_dir[1].Equals("mc_folder"))
                 {
                     launcher_profiles = mc_folder + temp_var_dir[2];
-                    settingsJson["settings"]["minecraft"]["launcher_profiles"] = launcher_profiles; 
+                    settingsJson["settings"]["minecraft"]["launcher_profiles"] = launcher_profiles;
                 }
             }
 
@@ -99,7 +100,7 @@ namespace ViceserverModpackInstaller
                 if (temp_var_dir[1].Equals("dir_instances"))
                 {
                     installer_folder = dir_instances + temp_var_dir[2];
-                    settingsJson["settings"]["general"]["installer_folder"] = installer_folder; 
+                    settingsJson["settings"]["general"]["installer_folder"] = installer_folder;
                 }
             }
 
@@ -109,11 +110,12 @@ namespace ViceserverModpackInstaller
                 if (temp_var_dir[1].Equals("installer_folder"))
                 {
                     installer_config = installer_folder + temp_var_dir[2];
-                    settingsJson["settings"]["general"]["installer_config"] = installer_config; 
+                    settingsJson["settings"]["general"]["installer_config"] = installer_config;
                 }
             }
 
             ShowWaitingTask.FinishTask("rsv-s");
+            return settingsJson;
         }
 
         public static dynamic LoadJson(string file)

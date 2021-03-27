@@ -25,10 +25,10 @@ namespace ViceserverModpackInstaller
             if (!Directory.Exists(installer_dir))
             {
                 // "Cartella 'temp' non trovata. Creazione in corso"
-                ShowWaitingTask.result = false;
+                ShowWaitingTask.UserTasks["chk-i"]["result"] = false;
                 ShowWaitingTask.FinishTask("chk-i");
 
-                Console.Write("\n· Creating a new environment for the installer ");
+                Console.Write("\n·    Creating a new environment for the installer ");
                 ShowWaitingTask.StartTask("crt-i");
 
                 // Creation of the new environment for the installer
@@ -38,7 +38,7 @@ namespace ViceserverModpackInstaller
             }
             else
             {
-                Console.Write("\n· Resolving paths in settings.json ");
+                Console.Write("\n·    Resolving paths in settings.json ");
                 DataManager.PathResolver();
             }
             ShowWaitingTask.FinishTask("chk-i");
@@ -54,16 +54,14 @@ namespace ViceserverModpackInstaller
             {
                 Console.WriteLine(title);
 
-                Console.Write("\n· Checking the modpack settings ");
+                Console.Write("\n·    Checking the modpack settings ");
                 CheckInstallerVersion();
                 
-                Console.WriteLine("\n\nTask Finished");
-
             }
             else if (stage is "test")
             {
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine("· Checking modpack installations ");
+                Console.WriteLine("·    Checking modpack installations ");
                 Console.ResetColor();
 
                 Console.Write("\nPress any key to exit .. ");
@@ -73,24 +71,23 @@ namespace ViceserverModpackInstaller
 
     public static class ShowWaitingTask
     {
-
-        public static Boolean startTask = true;
-        public static Boolean result = true;
         public static string[] ch = { "\\", "|", "/", "-" };
 
         // This Array is formed by custom Threads created by the user
         public static List<Thread> UserThreads = new List<Thread>();
-        public static List<string> UserTasks = new List<string>();
+        public static Dictionary<string, Dictionary<string, Boolean>> UserTasks = new Dictionary<string, Dictionary<string, Boolean>>();
 
         public static void StartTask(string task)
         {
-            Thread thread = new Thread(new ThreadStart(DrawWaitingTask));
+            Thread thread = new Thread(() => DrawWaitingTask(task));
             thread.Name = task;
 
             UserThreads.Add(thread);
-            UserTasks.Add(task);
+            UserTasks[task] = new Dictionary<string, Boolean>();
+            
+            UserTasks[task]["startTask"] = true;
+            UserTasks[task]["result"] = true;
 
-            startTask = true;
             thread.Start();
         }
 
@@ -100,17 +97,17 @@ namespace ViceserverModpackInstaller
             {
                 if (th.Name.Equals(task))
                 {
-                    startTask = false;
+                    UserTasks[task]["startTask"] = false;
                     while (th.IsAlive)
                     {
-
+                        
                     }
                     break;
                 }
             }
         }
 
-        public static void DrawWaitingTask()
+        public static void DrawWaitingTask(string task)
         {
 
             (int sx, int col) = Console.GetCursorPosition();
@@ -118,6 +115,7 @@ namespace ViceserverModpackInstaller
             int counter = 0;
             do
             {
+                Console.SetCursorPosition(2, Console.CursorTop);
                 if (counter == 3)
                 {
                     Console.Write(ch[counter]);
@@ -129,23 +127,23 @@ namespace ViceserverModpackInstaller
                     counter++;
                 }
                 Thread.Sleep(350);
-                Console.SetCursorPosition(sx, Console.CursorTop);
-            } while (startTask);
+                
+            } while (UserTasks[task]["startTask"]);
 
-            if (result)
+            if (UserTasks[task]["result"])
             {
-                Console.SetCursorPosition(sx, col);
+                Console.SetCursorPosition(2, col);
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.Write("✓");
                 Console.ResetColor();
             }
             else
             {
-                Console.SetCursorPosition(sx, col);
+                Console.SetCursorPosition(2, col);
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.Write("X");
                 Console.ResetColor();
-                result = true;
+                UserTasks[task]["result"] = true;
             }
         }
 
