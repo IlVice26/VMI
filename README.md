@@ -1,3 +1,5 @@
+![Main Workflow](https://github.com/IlVice26/VMI/actions/workflows/dotnet-desktop.yml/badge.svg)
+
 # VMI (Viceserver Modpack Installer)
 **Welcome to the VMI page!** <br>
 The idea of this project is to be able to distribute Minecraft modpacks very easily to your friends! <br>
