@@ -44,7 +44,10 @@ namespace ViceserverModpackInstaller
         {
             // Wait 1 second to redraw the cmd
             Thread.Sleep(2000);
-            Console.Clear();
+            if (!Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
 
             if (stage is "initial-setup")
             {
