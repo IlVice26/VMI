@@ -11,6 +11,8 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.yml'
+  workflow_dispatch:
+    branches: [ main, dev ]
   schedule:
     - cron: '0 0 * * 1'
 
