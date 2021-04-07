@@ -2,6 +2,9 @@
   <h1>VMI (Viceserver Modpack Installer)</h1>
   
   ![Main Workflow](https://github.com/IlVice26/VMI/actions/workflows/dotnet-desktop.yml/badge.svg)
+  [![CodeQL - Code Analysis](https://github.com/IlVice26/VMI/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/IlVice26/VMI/actions/workflows/codeql-analysis.yml)
+  
+  
   [![GitHub issues](https://img.shields.io/github/issues/IlVice26/VMI.svg)](https://GitHub.com/IlVice26/VMI/issues/)
   [![Maintenance](https://img.shields.io/badge/maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
   ![Maintaner](https://img.shields.io/badge/maintainer-IlVice26-blue)
