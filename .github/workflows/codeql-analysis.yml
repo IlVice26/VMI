@@ -43,7 +43,7 @@ jobs:
         dotnet-version: 5.0.x
 
     - run: |
-        dotnet build viceserver-modpack-installer-c#.csproj
+        dotnet build ./viceserver-modpack-installer-c#.csproj
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
