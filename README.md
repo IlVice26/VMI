@@ -10,5 +10,7 @@
   <p align=center>Elia Vicentini (eliavicentini26@gmail.com)</p>
 </div>
 
-
 ![Main Workflow](https://github.com/IlVice26/VMI/actions/workflows/dotnet-desktop.yml/badge.svg)
+[![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://GitHub.com/IlVice26/VMI/issues/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+![Maintaner](https://img.shields.io/badge/maintainer-IlVice26-blue)
