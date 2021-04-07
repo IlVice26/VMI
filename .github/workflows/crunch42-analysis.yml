@@ -34,5 +34,6 @@ jobs:
           min-score: 75
           # Upload results to Github code scanning
           upload-to-code-scanning: true
+          collection-name: GitHub Actions - VMI
           # Github token for uploading the results
           github-token: ${{ github.token }}
