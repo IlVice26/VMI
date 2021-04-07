@@ -19,7 +19,7 @@ on:
 jobs:
   
   analyze:
-    name: Analyze
+    name: CodeQL - Code Analyzer
     runs-on: windows-latest
     
     env:
@@ -36,9 +36,14 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
-        
+    
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
     - run: |
-        dotnet build /p:UseSharedCompilation=false
+        dotnet build viceserver-modpack-installer-c#.csproj
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
