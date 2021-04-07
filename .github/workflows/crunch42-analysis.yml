@@ -1,19 +1,26 @@
 
-name: "42Crunch REST API Static Security Testing"
+name: "42Crunch Security Testing"
 
 # follow standard Code Scanning triggers
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
-  schedule:
-    - cron: '43 6 * * 1'
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+  workflow_dispatch:
+    branches: [ main, dev ]
+  
 
 jobs:
   rest-api-static-security-testing:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
 
