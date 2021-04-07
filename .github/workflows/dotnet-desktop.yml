@@ -4,6 +4,9 @@ name: Build Test .NET
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
   pull_request:
     branches: [ main ]
 
