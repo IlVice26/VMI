@@ -9,20 +9,21 @@ on:
       - '**/*.yml'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
 
 jobs:
-
+  
   build:
-
     strategy:
       matrix:
         configuration: [Debug]
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
+    runs-on: windows-latest
+    
     env:
-      Solution_Name: viceserver-modpack-installer-c#            # Replace with your solution name, i.e. MyWpfApp.sln.
+      Solution_Name: viceserver-modpack-installer-c#
 
     steps:
     - name: Checkout
