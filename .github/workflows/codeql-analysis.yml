@@ -17,10 +17,14 @@ on:
     - cron: '0 0 * * 1'
 
 jobs:
+  
   analyze:
     name: Analyze
     runs-on: windows-latest
-
+    
+    env:
+      Solution_Name: viceserver-modpack-installer-c#
+    
     strategy:
       fail-fast: false
       matrix:
