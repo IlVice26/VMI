@@ -1,8 +1,7 @@
 
   <h1>VMI (Viceserver Modpack Installer)</h1>
   
-  ![Main Workflow](https://github.com/IlVice26/VMI/actions/workflows/dotnet-desktop.yml/badge.svg)
-  [![CodeQL - Code Analysis](https://github.com/IlVice26/VMI/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/IlVice26/VMI/actions/workflows/codeql-analysis.yml)
+[![buddy branch](https://app.buddy.works/ilvice26/vmi/repository/branch/main/badge.svg?token=87a8765aecac8bc375f9d68eacc1667b86e9397a0051db6db074f071cc08d3f2 "buddy branch")](https://app.buddy.works/ilvice26/vmi/repository/branch/main)
   
   
   [![GitHub issues](https://img.shields.io/github/issues/IlVice26/VMI.svg)](https://GitHub.com/IlVice26/VMI/issues/)
