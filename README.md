@@ -6,7 +6,7 @@
   
   
   [![GitHub issues](https://img.shields.io/github/issues/IlVice26/VMI.svg)](https://GitHub.com/IlVice26/VMI/issues/)
-  [![Maintenance](https://img.shields.io/badge/maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+  [![Maintenance](https://img.shields.io/badge/maintained%3F-yes-green.svg)](https://GitHub.com/IlVice26/graphs/commit-activity)
   ![Maintaner](https://img.shields.io/badge/maintainer-IlVice26-blue)
   [![Website shields.io](https://img.shields.io/website-up-down-green-red/http/viceserver.vpsgh.it.svg)](http://viceserver.vpsgh.it)
 
