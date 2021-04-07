@@ -38,7 +38,7 @@ jobs:
         languages: ${{ matrix.language }}
         
     - name: Build
-      run: dotnet build viceserver-modpack-installer-c#.csproj
+      run: dotnet build ../viceserver-modpack-installer-c#.csproj p:UseSharedCompilation=false
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
