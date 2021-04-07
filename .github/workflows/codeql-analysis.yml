@@ -3,8 +3,14 @@ name: "CodeQL - Code Analysis"
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
   schedule:
     - cron: '0 0 * * 1'
 
