@@ -2,12 +2,12 @@
 
 ## Supported Versions
 
-At the moment, the project was created with the .NET 5.1 version. 
+At the moment, the project was created with the .NET 5.0 version. 
 
 | .NET Version | Supported          |
 | ------------ | ------------------ |
 | 5.1.x        | :white_check_mark: |
-| 5.0.x        | :x:                |
+| 5.0.x        | :white_check_mark: |
 | 4.0.x        | :x:                |
 | < 4.0        | :x:                |
 
