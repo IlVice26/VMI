@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.IO;
 using System;
+using Octokit;
 
 
 namespace ViceserverModpackInstaller
@@ -16,33 +17,64 @@ namespace ViceserverModpackInstaller
             "  \\    /|  |\\/|  |  | Installer " + Program.VERSION + "\n" +
             "   \\__/	|__|  |__|__| Copyright 2021 - Elia Vicentini";
 
-        public static void CheckInstallerVersion()
+        public static void CheckInstallerEnvironment()
         {
-            ShowWaitingTask.StartTask("chk-i");
+            ShowWaitingTask.StartTask("chk-e");
 
             if (!File.Exists(DataManager.settings_info["general"]["installer_config"].ToString()))
             {
                 // "Cartella 'temp' non trovata. Creazione in corso"
                 ShowWaitingTask.UserTasks["chk-i"]["result"] = false;
-                ShowWaitingTask.FinishTask("chk-i");
+                ShowWaitingTask.FinishTask("chk-e");
 
                 Console.Write("\n·    Creating a new environment for the installer ");
-                ShowWaitingTask.StartTask("crt-i");
+                ShowWaitingTask.StartTask("crt-e");
 
                 // Creation of the new environment for the installer
                 DataManager.CreateInstallerConfig();
 
-                ShowWaitingTask.FinishTask("crt-i");
+                ShowWaitingTask.FinishTask("crt-e");
+            }
+
+            ShowWaitingTask.FinishTask("chk-e");
+        }
+
+        private static void CheckInstallerVersion()
+        {
+            ShowWaitingTask.StartTask("chk-v");
+
+            /*
+            
+            GitHubClient client = new GitHubClient(new ProductHeaderValue("IlVice26"));
+            List<Release> releases = (List<Release>) client.Repository.Release.GetAll("IlVice26", "vicepack-installer").ToList();
+
+            Version latestGitHubVersion = new Version(releases[0].TagName);
+            Version localVersion = new Version(Program.VERSION);
+
+            int versionComparison = localVersion.CompareTo(latestGitHubVersion);
+            if (versionComparison < 0)
+            {
+                //The version on GitHub is more up to date than this local release.
+            }
+            else if (versionComparison > 0)
+            {
+                //This local version is greater than the release version on GitHub.
             }
             else
             {
-                ShowWaitingTask.FinishTask("chk-i");
+                //This local Version and the Version on GitHub are equal.
             }
+
+            */
+
+            ShowWaitingTask.FinishTask("chk-v");
+
+            // Console.WriteLine(latestGitHubVersion.ToString());
         }
 
         public static void RedrawCmd(string stage)
         {
-            // Wait 1 second to redraw the cmd
+            // Wait 2 second to redraw the cmd
             Thread.Sleep(2000);
             Console.Clear();
 
@@ -50,17 +82,15 @@ namespace ViceserverModpackInstaller
             {
                 Console.WriteLine(title);
 
-                Console.Write("\n·    Checking the modpack settings ");
-                CheckInstallerVersion();
-                
+                Console.Write("\n·    Checking modpack environment");
+                CheckInstallerEnvironment();
             }
-            else if (stage is "test")
+            else if (stage is "check-version")
             {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine("·    Checking modpack installations ");
-                Console.ResetColor();
+                Console.WriteLine(title);
 
-                Console.Write("\nPress any key to exit .. ");
+                Console.Write("\n·    Checking modpack version");
+                CheckInstallerVersion();
             }
         }
     }
@@ -80,7 +110,7 @@ namespace ViceserverModpackInstaller
 
             UserThreads.Add(thread);
             UserTasks[task] = new Dictionary<string, Boolean>();
-            
+
             UserTasks[task]["startTask"] = true;
             UserTasks[task]["result"] = true;
 
@@ -96,7 +126,7 @@ namespace ViceserverModpackInstaller
                     UserTasks[task]["startTask"] = false;
                     while (th.IsAlive)
                     {
-                        
+
                     }
                     break;
                 }
@@ -111,7 +141,7 @@ namespace ViceserverModpackInstaller
             int counter = 0;
             do
             {
-                Console.SetCursorPosition(2, Console.CursorTop);
+                Console.SetCursorPosition(2, col);
                 if (counter == 3)
                 {
                     Console.Write(ch[counter]);
@@ -123,7 +153,7 @@ namespace ViceserverModpackInstaller
                     counter++;
                 }
                 Thread.Sleep(350);
-                
+
             } while (UserTasks[task]["startTask"]);
 
             if (UserTasks[task]["result"])
