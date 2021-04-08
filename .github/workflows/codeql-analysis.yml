@@ -1,0 +1,49 @@
+name: "CodeQL - Code Analysis"
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+  workflow_dispatch:
+    branches: [ main, dev ]
+  schedule:
+    - cron: '0 0 * * 1'
+
+jobs:
+  
+  analyze:
+    name: CodeQL - Code Analyzer
+    runs-on: windows-latest
+    
+    env:
+      Solution_Name: viceserver-modpack-installer-c#
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+    
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    - run: |
+        dotnet build ./viceserver-modpack-installer-c#.csproj
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1

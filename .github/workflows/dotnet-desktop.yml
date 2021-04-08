@@ -1,0 +1,56 @@
+
+name: Build Test .NET
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+
+jobs:
+  
+  build:
+    strategy:
+      matrix:
+        configuration: [Debug]
+
+    runs-on: windows-latest
+    
+    env:
+      Solution_Name: viceserver-modpack-installer-c#
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    # Execute all unit tests in the solution
+    - name: Execute run
+      run: dotnet run
+
+    # Create the app package by building and packaging the Windows Application Packaging project
+    #- name: Create the app package
+    #  run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
+    #  env:
+    #    Appx_Bundle: Always
+    #    Appx_Bundle_Platforms: x86|x64
+    #    Appx_Package_Build_Mode: StoreUpload
+    #    Configuration: ${{ matrix.configuration }}
+
+    # Remove the pfx
+    #- name: Remove the pfx
+    #  run: Remove-Item -path $env:Wap_Project_Directory\$env:Signing_Certificate
+

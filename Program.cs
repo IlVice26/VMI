@@ -11,7 +11,10 @@ namespace ViceserverModpackInstaller
         public static void Main()
         {
             // Clear the console
-            Console.Clear();
+            if (!Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
 
             /**
             Tasks of Viceserver Modpack Installer
@@ -22,6 +25,12 @@ namespace ViceserverModpackInstaller
             Utilities.RedrawCmd("initial-setup");
             Utilities.RedrawCmd("check-version");
             Console.ReadLine();
+            Console.SetCursorPosition(0, Console.CursorTop + 2);
+            
+            if (!Console.IsOutputRedirected)
+            {
+                Console.ReadLine();
+            }
         }
     }
 }
