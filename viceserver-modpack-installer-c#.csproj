@@ -22,11 +22,8 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-<<<<<<< HEAD
     <PackageReference Include="Octokit" Version="0.50.0" />
     <PackageReference Include="Terminal.Gui" Version="0.90.3" />
-=======
->>>>>>> a2e29998a9fd87729ce3f168da43ef27081379ea
   </ItemGroup>
 
 </Project>

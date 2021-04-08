@@ -108,30 +108,36 @@ namespace ViceserverModpackInstaller
 
         public static void StartTask(string task)
         {
-            Thread thread = new Thread(() => DrawWaitingTask(task));
-            thread.Name = task;
+            if (!Console.IsOutputRedirected)
+            {
+                Thread thread = new Thread(() => DrawWaitingTask(task));
+                thread.Name = task;
 
-            UserThreads.Add(thread);
-            UserTasks[task] = new Dictionary<string, Boolean>();
+                UserThreads.Add(thread);
+                UserTasks[task] = new Dictionary<string, Boolean>();
 
-            UserTasks[task]["startTask"] = true;
-            UserTasks[task]["result"] = true;
+                UserTasks[task]["startTask"] = true;
+                UserTasks[task]["result"] = true;
 
-            thread.Start();
+                thread.Start();
+            }
         }
 
         public static void FinishTask(string task)
         {
-            foreach (Thread th in UserThreads)
+            if (!Console.IsOutputRedirected)
             {
-                if (th.Name.Equals(task))
+                foreach (Thread th in UserThreads)
                 {
-                    UserTasks[task]["startTask"] = false;
-                    while (th.IsAlive)
+                    if (th.Name.Equals(task))
                     {
+                        UserTasks[task]["startTask"] = false;
+                        while (th.IsAlive)
+                        {
 
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
