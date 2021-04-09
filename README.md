@@ -2,7 +2,7 @@
   <h1>VMI (Viceserver Modpack Installer)</h1>
   
 [![buddy branch](https://app.buddy.works/ilvice26/vmi/repository/branch/main/badge.svg?token=87a8765aecac8bc375f9d68eacc1667b86e9397a0051db6db074f071cc08d3f2 "buddy branch")](https://app.buddy.works/ilvice26/vmi/repository/branch/main)
-  
+[![Build status](https://ci.appveyor.com/api/projects/status/efo0n325mftbh623?svg=true)](https://ci.appveyor.com/project/IlVice26/vmi)
   
   [![GitHub issues](https://img.shields.io/github/issues/IlVice26/VMI.svg)](https://GitHub.com/IlVice26/VMI/issues/)
   [![Maintenance](https://img.shields.io/badge/maintained%3F-yes-green.svg)](https://github.com/IlVice26/VMI/graphs/commit-activity)
