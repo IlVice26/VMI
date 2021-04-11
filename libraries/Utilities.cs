@@ -24,7 +24,11 @@ namespace ViceserverModpackInstaller
             if (!File.Exists(DataManager.settings_info["general"]["installer_config"].ToString()))
             {
                 // "Cartella 'temp' non trovata. Creazione in corso"
-                ShowWaitingTask.UserTasks["chk-e"]["result"] = false;
+                if (!Console.IsOutputRedirected)
+                {
+                    ShowWaitingTask.UserTasks["chk-e"]["result"] = false;
+                }
+
                 ShowWaitingTask.FinishTask("chk-e");
 
                 Console.Write("\n·    Creating a new environment for the installer ");
@@ -108,17 +112,18 @@ namespace ViceserverModpackInstaller
 
         public static void StartTask(string task)
         {
+
+            UserTasks[task] = new Dictionary<string, Boolean>();
+
+            UserTasks[task]["startTask"] = true;
+            UserTasks[task]["result"] = true;
+
             if (!Console.IsOutputRedirected)
             {
                 Thread thread = new Thread(() => DrawWaitingTask(task));
                 thread.Name = task;
-
                 UserThreads.Add(thread);
-                UserTasks[task] = new Dictionary<string, Boolean>();
-
-                UserTasks[task]["startTask"] = true;
-                UserTasks[task]["result"] = true;
-
+                
                 thread.Start();
             }
         }
