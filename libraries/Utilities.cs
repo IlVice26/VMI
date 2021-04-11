@@ -24,7 +24,7 @@ namespace ViceserverModpackInstaller
             if (!File.Exists(DataManager.settings_info["general"]["installer_config"].ToString()))
             {
                 // "Cartella 'temp' non trovata. Creazione in corso"
-                ShowWaitingTask.UserTasks["chk-i"]["result"] = false;
+                ShowWaitingTask.UserTasks["chk-e"]["result"] = false;
                 ShowWaitingTask.FinishTask("chk-e");
 
                 Console.Write("\n·    Creating a new environment for the installer ");

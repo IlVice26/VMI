@@ -3,5 +3,6 @@
 bin
 build
 obj
+tmp
 
 compile.bat

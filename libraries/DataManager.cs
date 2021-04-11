@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using System.Net;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 namespace ViceserverModpackInstaller
@@ -13,7 +15,6 @@ namespace ViceserverModpackInstaller
 
         private static string settings_link = "http://viceserver.vpsgh.it/files/json/settings.json";
         public static string username = Environment.UserName;
-        public static string installer_dir = "C:\\Users\\" + username + "\\AppData\\Roaming\\vmi";
         public static dynamic settings = PathResolver();
         public static dynamic settings_info = JsonConvert.DeserializeObject<Dictionary<string, object>>(GetSettingsInfo());
         public static dynamic modpacks_info = JsonConvert.DeserializeObject<Dictionary<string, object>>(GetModpacksInfo());
@@ -21,6 +22,11 @@ namespace ViceserverModpackInstaller
 
         public static void CreateInstallerConfig()
         {
+            if (!Directory.Exists(settings_info["general"]["installer_folder"].ToString()))
+            {
+                Directory.CreateDirectory(settings_info["general"]["installer_folder"].ToString());
+            }
+
             if (!File.Exists(settings_info["general"]["installer_config"].ToString()))
             {
                 File.WriteAllText(
@@ -57,41 +63,105 @@ namespace ViceserverModpackInstaller
             }
         }
 
-        private static dynamic PathResolver()
+        private static string GetDirInstancesOS()
         {
-            if (!Directory.Exists(installer_dir))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                dynamic settingsJson = LoadJson("tmp/settings.json");
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    string dir_instances = settingsJson["settings"]["instances_folder"]["dir_instances_osx"];
+
+                    if (dir_instances.Contains("%"))
+                    {
+                        string[] temp_var_dir = dir_instances.Split("%");
+                        if (temp_var_dir[1].Equals("home"))
+                        {
+                            dir_instances = "/Users/" + username + temp_var_dir[2];
+                            return dir_instances;
+                        }
+                    }
+
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    string dir_instances = settingsJson["settings"]["instances_folder"]["dir_instances_lnx"];
+
+                    if (dir_instances.Contains("%"))
+                    {
+                        string[] temp_var_dir = dir_instances.Split("%");
+                        if (temp_var_dir[1].Equals("home"))
+                        {
+                            dir_instances = "/home/";
+                            return dir_instances;
+                        }
+                    }
+                }
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                dynamic settingsJson = LoadJson("tmp/settings.json");
+                string dir_instances = settingsJson["settings"]["instances_folder"]["dir_instances_win"];
+
+                if (dir_instances.Contains("%"))
+                {
+                    string[] temp_var_dir = dir_instances.Split("%");
+                    if (temp_var_dir[1].Equals("home"))
+                    {
+                        dir_instances = "C:\\Users\\" + username + temp_var_dir[2];
+                        return dir_instances;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static dynamic GetSettingsJsonOS()
+        {
+            if (!Directory.Exists("tmp"))
             {
                 Directory.CreateDirectory(
-                   installer_dir
+                   "tmp"
                 );
             }
 
-            if (!File.Exists(installer_dir + "\\settings.json"))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                using (var client = new WebClient())
+                if (!File.Exists("tmp/settings.json"))
                 {
-                    client.DownloadFile(
-                        new System.Uri(settings_link),
-                        installer_dir + "\\settings.json"
-                    );
-                };
-
-            }
-
-            dynamic settingsJson = LoadJson(installer_dir + "\\settings.json");
-
-            // Fix dir_instances
-            string dir_instances = settingsJson["settings"]["instances_folder"]["dir_instances"];
-
-            if (dir_instances.Contains("%"))
-            {
-                string[] temp_var_dir = dir_instances.Split("%");
-                if (temp_var_dir[1].Equals("home"))
-                {
-                    dir_instances = "C:\\Users\\" + username + temp_var_dir[2];
-                    settingsJson["settings"]["instances_folder"]["dir_instances"] = dir_instances;
+                    using (var client = new WebClient())
+                    {
+                        client.DownloadFile(
+                            new System.Uri(settings_link),
+                            "tmp/settings.json"
+                        );
+                    };
                 }
+                return LoadJson("tmp/settings.json");
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (!File.Exists("tmp\\settings.json"))
+                {
+                    using (var client = new WebClient())
+                    {
+                        client.DownloadFile(
+                            new System.Uri(settings_link),
+                            "tmp\\settings.json"
+                        );
+                    };
+                }
+                return LoadJson("tmp\\settings.json");
+            }
+            return null;
+        }
+
+        private static dynamic PathResolver()
+        {
+
+            // Variables already fixed by GetDirInstancesOS and GetSettingsJsonOS
+            dynamic settingsJson = GetSettingsJsonOS();
+            string dir_instances = GetDirInstancesOS();
 
             // Fix minecraft section
             string mc_folder = settingsJson["settings"]["minecraft"]["mc_folder"];
@@ -101,10 +171,20 @@ namespace ViceserverModpackInstaller
             if (mc_folder.Contains("%"))
             {
                 string[] temp_var_dir = mc_folder.Split("%");
-                if (temp_var_dir[1].Equals("dir_instances"))
+                if (temp_var_dir[1].Contains("dir_instances"))
                 {
-                    mc_folder = dir_instances + temp_var_dir[2];
-                    settingsJson["settings"]["minecraft"]["mc_folder"] = mc_folder;
+                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        string unix_str = temp_var_dir[2].Replace("\\", "/");
+                        mc_folder = dir_instances + unix_str;
+                        settingsJson["settings"]["minecraft"]["mc_folder"] = mc_folder;
+                    }
+                    else
+                    {
+                        mc_folder = dir_instances + temp_var_dir[2];
+                        settingsJson["settings"]["minecraft"]["mc_folder"] = mc_folder;
+                    }
+
                 }
             }
 
@@ -113,8 +193,18 @@ namespace ViceserverModpackInstaller
                 string[] temp_var_dir = mc_versions.Split("%");
                 if (temp_var_dir[1].Equals("mc_folder"))
                 {
-                    mc_versions = mc_folder + temp_var_dir[2];
-                    settingsJson["settings"]["minecraft"]["mc_versions"] = mc_versions;
+                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        string unix_str = temp_var_dir[2].Replace("\\", "/");
+                        mc_versions = mc_folder + unix_str;
+                        settingsJson["settings"]["minecraft"]["mc_versions"] = mc_versions;
+                    }
+                    else
+                    {
+                        mc_versions = mc_folder + temp_var_dir[2];
+                        settingsJson["settings"]["minecraft"]["mc_versions"] = mc_versions;
+                    }
+
                 }
             }
 
@@ -123,8 +213,18 @@ namespace ViceserverModpackInstaller
                 string[] temp_var_dir = launcher_profiles.Split("%");
                 if (temp_var_dir[1].Equals("mc_folder"))
                 {
-                    launcher_profiles = mc_folder + temp_var_dir[2];
-                    settingsJson["settings"]["minecraft"]["launcher_profiles"] = launcher_profiles;
+                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        string unix_str = temp_var_dir[2].Replace("\\", "/");
+                        launcher_profiles = mc_folder + unix_str;
+                        settingsJson["settings"]["minecraft"]["launcher_profiles"] = launcher_profiles;
+                    }
+                    else
+                    {
+                        launcher_profiles = mc_folder + temp_var_dir[2];
+                        settingsJson["settings"]["minecraft"]["launcher_profiles"] = launcher_profiles;
+                    }
+
                 }
             }
 
@@ -135,10 +235,20 @@ namespace ViceserverModpackInstaller
             if (installer_folder.Contains("%"))
             {
                 string[] temp_var_dir = installer_folder.Split("%");
-                if (temp_var_dir[1].Equals("dir_instances"))
+                if (temp_var_dir[1].Contains("dir_instances"))
                 {
-                    installer_folder = dir_instances + temp_var_dir[2];
-                    settingsJson["settings"]["general"]["installer_folder"] = installer_folder;
+                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        string unix_str = temp_var_dir[2].Replace("\\", "/");
+                        installer_folder = dir_instances + unix_str;
+                        settingsJson["settings"]["general"]["installer_folder"] = installer_folder;
+                    }
+                    else
+                    {
+                        installer_folder = dir_instances + temp_var_dir[2];
+                        settingsJson["settings"]["general"]["installer_folder"] = installer_folder;
+                    }
+
                 }
             }
 
@@ -147,13 +257,48 @@ namespace ViceserverModpackInstaller
                 string[] temp_var_dir = installer_config.Split("%");
                 if (temp_var_dir[1].Equals("installer_folder"))
                 {
-                    installer_config = installer_folder + temp_var_dir[2];
-                    settingsJson["settings"]["general"]["installer_config"] = installer_config;
+                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        string unix_str = temp_var_dir[2].Replace("\\", "/");
+                        installer_config = installer_folder + unix_str;
+                        settingsJson["settings"]["general"]["installer_config"] = installer_config;
+                    }
+                    else
+                    {
+                        installer_config = installer_folder + temp_var_dir[2];
+                        settingsJson["settings"]["general"]["installer_config"] = installer_config;
+                    }
+
                 }
             }
 
-            Dictionary<string, object> settingsJ = settingsJson;
-            return settingsJ;
+            foreach (JProperty item in settingsJson["modpacks"])
+            {
+                string modpack_gameDir = settingsJson["modpacks"][item.Name.ToString()]["profile"]["gameDir"].ToString();
+
+                if (modpack_gameDir.Contains("%"))
+                {
+                    string[] temp_var_dir = modpack_gameDir.Split("%");
+                    if (temp_var_dir[1].Contains("dir_instances"))
+                    {
+                        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            string unix_str = temp_var_dir[2].Replace("\\", "/");
+                            modpack_gameDir = dir_instances + unix_str;
+                            settingsJson["modpacks"][item.Name.ToString()]["profile"]["gameDir"] = modpack_gameDir;
+                        }
+                        else
+                        {
+                            installer_config = dir_instances + temp_var_dir[2];
+                            settingsJson["modpacks"][item.Name.ToString()]["profile"]["gameDir"] = modpack_gameDir;
+                        }
+
+                    }
+                }
+            }
+
+            return settingsJson;
+
         }
 
         private static dynamic GetSettingsInfo()

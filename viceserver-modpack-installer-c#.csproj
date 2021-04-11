@@ -4,11 +4,7 @@
     <RootNamespace>ViceserverModpackInstaller</RootNamespace>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>true</SelfContained>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
-    <PublishTrimmed>true</PublishTrimmed>
+    <RuntimeIdentifiers>win10-x64;osx.10.15-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,7 +19,6 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Octokit" Version="0.50.0" />
-    <PackageReference Include="Terminal.Gui" Version="0.90.3" />
   </ItemGroup>
 
 </Project>
