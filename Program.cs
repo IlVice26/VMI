@@ -18,7 +18,11 @@ namespace ViceserverModpackInstaller
             */
             Utilities.RedrawCmd("initial-setup");
             // Utilities.RedrawCmd("check-version");
-            Console.SetCursorPosition(0, Console.CursorTop + 2);
+
+            if (!Console.IsOutputRedirected)
+            {
+                Console.SetCursorPosition(0, Console.CursorTop + 2);
+            }
         }
     }
 }
