@@ -5,10 +5,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/efo0n325mftbh623?svg=true)](https://ci.appveyor.com/project/IlVice26/vmi)
   
   [![GitHub issues](https://img.shields.io/github/issues/IlVice26/VMI.svg)](https://GitHub.com/IlVice26/VMI/issues/)
-  [![Maintenance](https://img.shields.io/badge/maintained%3F-yes-green.svg)](https://github.com/IlVice26/VMI/graphs/commit-activity)
-  ![Maintaner](https://img.shields.io/badge/maintainer-IlVice26-blue)
   [![Website shields.io](https://img.shields.io/website-up-down-green-red/http/viceserver.vpsgh.it.svg)](http://viceserver.vpsgh.it)
-
+  ![Maintaner](https://img.shields.io/badge/maintainer-IlVice26-blue)
   
   <p>
     <b>Welcome to the VMI page!</b> <br>
